@@ -11,10 +11,17 @@ int main(const int argc, char* argv[])
   res                   = calc_opts_parse(argc, argv, &calc_opts);
   if (res != 0)
   {
+    /*
+     * Failed to parse cmnd line options.
+     * Free allocated memory and return with the failure.
+     */
     calc_opts_dtor(&calc_opts);
     return EXIT_FAILURE;
   }
 
+  /* Free memory allocated for the variable descriptors. */
   calc_opts_dtor(&calc_opts);
+
+  /* Return with success. Yay! :) */
   return EXIT_SUCCESS;
 }

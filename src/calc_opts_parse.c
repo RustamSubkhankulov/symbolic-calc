@@ -76,6 +76,10 @@ static int calc_opts_alloc(calc_opts_t* calc_opts)
   return 0;
 }
 
+/**
+ * @brief Checks whether string is convertible into the interger value.
+ * @return true if string is convertible, false otherwise.
+ */
 static bool is_number(const char* str)
 {
   while (*str != '\0')
@@ -89,6 +93,10 @@ static bool is_number(const char* str)
   return true;
 }
 
+/**
+ * @brief Parse option and fill in fields in the variable descriptor.
+ * @return 0 on success, -1 otherwise.
+ */
 static int calc_opts_parse_var_descr(var_descr_t* var)
 {
   if (optarg == NULL)
