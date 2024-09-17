@@ -21,10 +21,21 @@ set(CMAKE_C_FLAGS_RELEASE "-O2")
 
 set(SRC_DIR src)
 set(INC_DIR inc)
-set(INC_PRIVATE_DIR inc)
+set(INC_PRIVATE_DIR inc-private)
 
 find_package(FLEX REQUIRED)
-FLEX_TARGET(lexer ${CMAKE_SOURCE_DIR}/rules/lexer.l ${CMAKE_CURRENT_BINARY_DIR}/lexer.c)
+if (NOT FLEX_FOUND)
+  error("Failed to find Flex package")
+endif()
+file(GLOB FLEX_SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/lex/*.l)
+FLEX_TARGET(lexer ${FLEX_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/lex.c)
+
+FIND_PACKAGE(BISON REQUIRED)
+if (NOT BISON_FOUND)
+  error("Failed to find Bison package")
+endif()
+file(GLOB BISON_SOURCES CONFIGURE_DEPENDS ${CMAKE_SOURCE_DIR}/yacc/*.y)
+BISON_TARGET(parser ${BISON_SOURCES} ${CMAKE_CURRENT_BINARY_DIR}/yacc.c)
 
 file(GLOB SOURCES CONFIGURE_DEPENDS ${SRC_DIR}/*.c)
 
@@ -34,22 +45,18 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 add_executable(${PROJECT_NAME} 
   ${SOURCES}
   ${FLEX_lexer_OUTPUTS}
+  ${BISON_parser_OUTPUTS}
   )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${INC_DIR})
 target_include_directories(${PROJECT_NAME} PRIVATE ${INC_PRIVATE_DIR})
 
-option(VERBOSE "Dump parsing process" OFF)
-if (VERBOSE)
-  target_compile_definitions(${PROJECT_NAME} PRIVATE -DVERBOSE)
+option(VERBOSE_LEX "Dump tokenization process" OFF)
+if (VERBOSE_LEX)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE -DVERBOSE_LEX)
 endif()
 
-option(DUMP "Dump AST in DOT format" OFF)
-if (DUMP)
-  target_compile_definitions(${PROJECT_NAME} PRIVATE -DDUMP)
-endif()
-
-option(DUMP_JSON "Make lexer dump parsed tokens in json format" OFF)
-if (DUMP_JSON)
-  target_compile_definitions(${PROJECT_NAME} PRIVATE -DDUMP_JSON)
+option(VERBOSE_YACC "Dump parsing process" OFF)
+if (VERBOSE_YACC)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE -DVERBOSE_YACC)
 endif()
