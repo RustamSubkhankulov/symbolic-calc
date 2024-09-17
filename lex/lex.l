@@ -93,6 +93,6 @@ EXP { LEX_VERBOSE_PRINT("STD_CONST: %s \n", yytext); yylval.ival = EXP; return S
 \}  { LEX_VERBOSE_PRINT("CLOS_BR_CRVD \n"); return CLOS_BR_CRVD; }
 
 [[:space:]]+ {} /* Ignore whitespaces. */
-\\n lexical_error(yytext);
+.|\\n lexical_error(yytext);
 
 %%
