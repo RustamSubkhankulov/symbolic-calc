@@ -14,7 +14,7 @@
  * @var int    integer_value     Integer value of the variable.
  * @var char[] constant_name     Name of the predefined constant.
  */
-typedef union
+typedef struct
 {
   bool is_named_constant;
 

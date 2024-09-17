@@ -123,7 +123,8 @@ static int calc_opts_parse_var_descr(var_descr_t* var)
   if (is_number_str(var_value) == true)
   {
     /* Convert to integer value is possible. */
-    var->value.integer_value = atoi(var_value);
+    var->value.is_named_constant = false;
+    var->value.integer_value     = atoi(var_value);
   }
   else
   {
@@ -131,7 +132,8 @@ static int calc_opts_parse_var_descr(var_descr_t* var)
      * Variable value's string is not convertible to integer.
      * Assume that variable is defined with predefined named constant.
      */
-    var->value.constant_name = var_value;
+    var->value.is_named_constant = true;
+    var->value.constant_name     = var_value;
   }
 
   return 0;

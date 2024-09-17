@@ -19,9 +19,9 @@ __attribute((noreturn)) static void lexical_error(const char* yytext)
 }
 
 #ifdef VERBOSE_LEX
-#define VERBOSE_PRINT(...) do { printf(__VA_ARGS__); } while(0);
+#define LEX_VERBOSE_PRINT(...) do { fprintf(stderr, __VA_ARGS__); } while(0);
 #else
-#define VERBOSE_PRINT(...)
+#define LEX_VERBOSE_PRINT(...)
 #endif
 
 %}
@@ -51,46 +51,46 @@ VAR_ID  {NAME}{ID_TAIL}
 /* Rules section. */
 %%
 
-sin  { VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = SIN;  return STD_FUNC; }
-cos  { VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = COS;  return STD_FUNC; }
-tg   { VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = TG;   return STD_FUNC; }
-ctg  { VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = CTG;  return STD_FUNC; }
-sqrt { VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = SQRT; return STD_FUNC; }
+sin  { LEX_VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = SIN;  return STD_FUNC; }
+cos  { LEX_VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = COS;  return STD_FUNC; }
+tg   { LEX_VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = TG;   return STD_FUNC; }
+ctg  { LEX_VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = CTG;  return STD_FUNC; }
+sqrt { LEX_VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = SQRT; return STD_FUNC; }
 
-PI  { VERBOSE_PRINT("STD_CONST: %s \n", yytext); yylval.ival = PI;  return STD_CONST; }
-EXP { VERBOSE_PRINT("STD_CONST: %s \n", yytext); yylval.ival = EXP; return STD_CONST; }
+PI  { LEX_VERBOSE_PRINT("STD_CONST: %s \n", yytext); yylval.ival = PI;  return STD_CONST; }
+EXP { LEX_VERBOSE_PRINT("STD_CONST: %s \n", yytext); yylval.ival = EXP; return STD_CONST; }
 
 {NUMINT} { 
 
-  VERBOSE_PRINT("NUMINT: %s \n", yytext); 
+  LEX_VERBOSE_PRINT("NUMINT: %s \n", yytext); 
   yylval.ival = atoi(yytext);
   return NUMINT; 
 }
 
 {NUMFLT} { 
 
-  VERBOSE_PRINT("NUMFLT: %s \n", yytext); 
+  LEX_VERBOSE_PRINT("NUMFLT: %s \n", yytext); 
   yylval.fval = atof(yytext);
   return NUMFLT; 
 }
 
 {VAR_ID} { 
 
-  VERBOSE_PRINT("VAR_ID: %s \n", yytext);
+  LEX_VERBOSE_PRINT("VAR_ID: %s \n", yytext);
   yylval.sval = yytext;
   return VAR_ID; 
 }
 
-\+  { VERBOSE_PRINT("ADD \n"); return ADD; }
-\-  { VERBOSE_PRINT("SUB \n"); return SUB; }
-\/  { VERBOSE_PRINT("DIV \n"); return DIV; }
-\*  { VERBOSE_PRINT("MUL \n"); return MUL; }
+\+  { LEX_VERBOSE_PRINT("ADD \n"); return ADD; }
+\-  { LEX_VERBOSE_PRINT("SUB \n"); return SUB; }
+\/  { LEX_VERBOSE_PRINT("DIV \n"); return DIV; }
+\*  { LEX_VERBOSE_PRINT("MUL \n"); return MUL; }
 
-\(  { VERBOSE_PRINT("OPEN_BR_RND \n"); return OPEN_BR_RND; }
-\)  { VERBOSE_PRINT("CLOS_BR_RND \n"); return CLOS_BR_RND; }
+\(  { LEX_VERBOSE_PRINT("OPEN_BR_RND \n"); return OPEN_BR_RND; }
+\)  { LEX_VERBOSE_PRINT("CLOS_BR_RND \n"); return CLOS_BR_RND; }
 
-\{  { VERBOSE_PRINT("OPEN_BR_CRVD \n"); return OPEN_BR_CRVD; }
-\}  { VERBOSE_PRINT("CLOS_BR_CRVD \n"); return CLOS_BR_CRVD; }
+\{  { LEX_VERBOSE_PRINT("OPEN_BR_CRVD \n"); return OPEN_BR_CRVD; }
+\}  { LEX_VERBOSE_PRINT("CLOS_BR_CRVD \n"); return CLOS_BR_CRVD; }
 
 [[:space:]]+ {} /* Ignore whitespaces. */
 \\n lexical_error(yytext);
