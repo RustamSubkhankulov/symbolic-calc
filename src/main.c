@@ -23,15 +23,15 @@ int main(const int argc, char* argv[])
 
   printf("Evaluating expression: %s \n", expr);
 
-  float evaluation_result = 0.f;
-  res                     = calc_eval_expr(expr, &calc_opts, &evaluation_result);
+  float eval_res = 0;
+  res            = calc_eval_expr(expr, &calc_opts, &eval_res);
   if (res != 0)
   {
     ret_code = EXIT_FAILURE;
     goto exit;
   }
 
-  printf("Evaluation result is %f \n", evaluation_result);
+  printf("Evaluation result is %f \n", eval_res);
 
 exit:
 

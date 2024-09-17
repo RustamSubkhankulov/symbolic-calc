@@ -4,6 +4,8 @@
 /* Includes. */
 %top {
   #include <stdio.h>
+  #include <string.h>
+  #include "standard.h"
   #include "yacc.h"
 }
 
@@ -17,9 +19,9 @@ __attribute((noreturn)) static void lexical_error(const char* yytext)
 }
 
 #ifdef VERBOSE_LEX
-#define VERBOSE_LEX_PRINT(...) do { printf(__VA_ARGS__); } while(0);
+#define VERBOSE_PRINT(...) do { printf(__VA_ARGS__); } while(0);
 #else
-#define VERBOSE_LEX_PRINT(...)
+#define VERBOSE_PRINT(...)
 #endif
 
 %}
@@ -49,29 +51,46 @@ VAR_ID  {NAME}{ID_TAIL}
 /* Rules section. */
 %%
 
-sin|cos|tg|ctg|sqrt { VERBOSE_LEX_PRINT("STD_FUNC discovered: %s \n", yytext); return STD_FUNC; }
+sin  { VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = SIN;  return STD_FUNC; }
+cos  { VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = COS;  return STD_FUNC; }
+tg   { VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = TG;   return STD_FUNC; }
+ctg  { VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = CTG;  return STD_FUNC; }
+sqrt { VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = SQRT; return STD_FUNC; }
 
-PI|EXP { VERBOSE_LEX_PRINT("STD_CONST discovered: %s \n", yytext); return STD_CONST; }
+PI  { VERBOSE_PRINT("STD_CONST: %s \n", yytext); yylval.ival = PI;  return STD_CONST; }
+EXP { VERBOSE_PRINT("STD_CONST: %s \n", yytext); yylval.ival = EXP; return STD_CONST; }
 
-{NUMINT} { VERBOSE_LEX_PRINT("NUMINT discovered: %s \n", yytext); return NUMINT; }
-{NUMFLT} { VERBOSE_LEX_PRINT("NUMFLT discovered: %s \n", yytext); return NUMFLT; } 
+{NUMINT} { 
 
-{VAR_ID} { VERBOSE_LEX_PRINT("VAR_ID discovered: %s \n", yytext); return VAR_ID; }
+  VERBOSE_PRINT("NUMINT: %s \n", yytext); 
+  yylval.ival = atoi(yytext);
+  return NUMINT; 
+}
 
-\+       { VERBOSE_LEX_PRINT("ADD discovered \n"); return ADD; }
-\-       { VERBOSE_LEX_PRINT("SUB discovered \n"); return SUB; }
-\/       { VERBOSE_LEX_PRINT("DIV discovered \n"); return DIV; }
-\*       { VERBOSE_LEX_PRINT("MUL discovered \n"); return MUL; }
-\&       { VERBOSE_LEX_PRINT("AND discovered \n"); return AND; }
-\^       { VERBOSE_LEX_PRINT("XOR discovered \n"); return XOR; }
-\~       { VERBOSE_LEX_PRINT("NOT discovered \n"); return NOT; }
-\|       { VERBOSE_LEX_PRINT("OR discovered \n"); return OR; }
+{NUMFLT} { 
 
-\(       { VERBOSE_LEX_PRINT("OPEN_BR_RND discovered \n"); return OPEN_BR_RND; }
-\)       { VERBOSE_LEX_PRINT("CLOS_BR_RND discovered \n"); return CLOS_BR_RND; }
+  VERBOSE_PRINT("NUMFLT: %s \n", yytext); 
+  yylval.fval = atof(yytext);
+  return NUMFLT; 
+}
 
-\{       { VERBOSE_LEX_PRINT("OPEN_BR_CRVD discovered \n"); return OPEN_BR_CRVD; }
-\}       { VERBOSE_LEX_PRINT("CLOS_BR_CRVD discovered \n"); return CLOS_BR_CRVD; }
+{VAR_ID} { 
+
+  VERBOSE_PRINT("VAR_ID: %s \n", yytext);
+  yylval.sval = yytext;
+  return VAR_ID; 
+}
+
+\+  { VERBOSE_PRINT("ADD \n"); return ADD; }
+\-  { VERBOSE_PRINT("SUB \n"); return SUB; }
+\/  { VERBOSE_PRINT("DIV \n"); return DIV; }
+\*  { VERBOSE_PRINT("MUL \n"); return MUL; }
+
+\(  { VERBOSE_PRINT("OPEN_BR_RND \n"); return OPEN_BR_RND; }
+\)  { VERBOSE_PRINT("CLOS_BR_RND \n"); return CLOS_BR_RND; }
+
+\{  { VERBOSE_PRINT("OPEN_BR_CRVD \n"); return OPEN_BR_CRVD; }
+\}  { VERBOSE_PRINT("CLOS_BR_CRVD \n"); return CLOS_BR_CRVD; }
 
 [[:space:]]+ {} /* Ignore whitespaces. */
 \\n lexical_error(yytext);

@@ -1,10 +1,13 @@
 #include <assert.h>
+#include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
 
 #include "calc.h"
+#include "standard.h"
+#include "variables.h"
 
 /* Buffer handle. */
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
@@ -16,7 +19,10 @@ extern YY_BUFFER_STATE yy_scan_string(char* str);
 extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 
 /* Main parser method. */
-extern int yyparse(void);
+extern int yyparse(float* eval_res);
+
+/* Calc's options for the current expression evaluation. */
+static const calc_opts_t* sCalc_opts;
 
 static bool is_empty_str(const char* str)
 {
@@ -31,11 +37,40 @@ static bool is_empty_str(const char* str)
   return true;
 }
 
-int calc_eval_expr(const char* expr, const calc_opts_t* calc_opts, float* result)
+float calc_get_var_value(const char* var_name)
+{
+  assert(var_name);
+
+  for (size_t idx = 0U; idx < sCalc_opts->vars_num; ++idx)
+  {
+    /* Skip other variables. */
+    if (strcmp(var_name, sCalc_opts->vars[idx].name))
+    {
+      continue;
+    }
+
+    if (sCalc_opts->vars[idx].value.is_named_constant)
+    {
+      /* Convert name of the standard constant to its value. */
+      return std_const_value_from_str(sCalc_opts->vars[idx].value.constant_name);
+    }
+
+    /* Return variable's value. */
+    return sCalc_opts->vars[idx].value.integer_value;
+  }
+
+  fprintf(stderr, "Undefined variable \'var_name\'. \n");
+  exit(EXIT_FAILURE);
+
+  /* Unreachable. */
+  return 0.f;
+}
+
+int calc_eval_expr(const char* expr, const calc_opts_t* calc_opts, float* eval_res)
 {
   assert(expr != NULL);
   assert(calc_opts != NULL);
-  assert(result != NULL);
+  assert(eval_res != NULL);
 
   /* Check for the empty string. */
   if (is_empty_str(expr) == true)
@@ -51,8 +86,11 @@ int calc_eval_expr(const char* expr, const calc_opts_t* calc_opts, float* result
    */
   YY_BUFFER_STATE buffer_state = yy_scan_string((char*) expr);
 
+  /* Set options for the current expression evaluation (for variable's values). */
+  sCalc_opts = calc_opts;
+
   /* Call YACC main parser's method. */
-  yyparse();
+  yyparse(eval_res);
 
   /* Reclaim allocated resources. */
   yy_delete_buffer(buffer_state);

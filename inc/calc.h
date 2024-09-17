@@ -1,6 +1,8 @@
 #ifndef CALC_H
 #define CALC_H
 
+#include <stddef.h>
+
 #include "variables.h"
 
 /**
@@ -20,16 +22,16 @@ typedef struct
  *
  * @detail Parses expression, represented as string parameter 'expr'.
  *         Besides integer and float numbers, operators and brackets
- *         expression may contain variales. Each variable used must be
- *         defined and its descriptor is found in 'calc_opts'
+ *         expression may contain variales. Each variable used must
+ *         be defined and its descriptor is found in 'calc_opts'
  *
  * @param[in]  expr      String representation of the expression
  *                       to be evaluated.
  * @param[in]  calc_opts Calc's options (variables descriptors).
- * @param[out] result    Result of the expression evaluation.
+ * @param[out] eval_res  Result of the expression evaluation.
  *
  * @return 0 on success, -1 otherwise.
  */
-int calc_eval_expr(const char* expr, const calc_opts_t* calc_opts, float* result);
+int calc_eval_expr(const char* expr, const calc_opts_t* calc_opts, float* eval_res);
 
 #endif /* CALC_H */

@@ -4,19 +4,6 @@
 #include <stdbool.h>
 
 /**
- * @brief To make the development process easier, we limit
- *        the allowed length of a variable name from above.
- */
-#define VAR_NAME_MAX_LEN 16U
-
-/**
- * @brief To make the development process easier, we limit
- *        the allowed length of a constant name from above.
- *        TODO: Move this macrodefinition to appropiate header.
- */
-#define CONSTANT_NAME_MAX_LEN 16U
-
-/**
  * @brief Variable's value structure.
  *
  * @var bool   is_named_constant Flag, indicating how the variable is defined.
@@ -33,6 +20,7 @@ typedef union
 
   union
   {
+    /* TODO: add float values. */
     int integer_value;
     const char* constant_name;
   };
