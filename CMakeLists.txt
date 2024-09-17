@@ -23,8 +23,8 @@ set(SRC_DIR src)
 set(INC_DIR inc)
 set(INC_PRIVATE_DIR inc)
 
-# find_package(FLEX REQUIRED)
-# FLEX_TARGET(lexer ${CMAKE_SOURCE_DIR}/rules/lexer.l ${CMAKE_CURRENT_BINARY_DIR}/lexer.c)
+find_package(FLEX REQUIRED)
+FLEX_TARGET(lexer ${CMAKE_SOURCE_DIR}/rules/lexer.l ${CMAKE_CURRENT_BINARY_DIR}/lexer.c)
 
 file(GLOB SOURCES CONFIGURE_DEPENDS ${SRC_DIR}/*.c)
 
@@ -33,7 +33,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(${PROJECT_NAME} 
   ${SOURCES}
-  # ${FLEX_lexer_OUTPUTS}
+  ${FLEX_lexer_OUTPUTS}
   )
 
 target_include_directories(${PROJECT_NAME} PUBLIC ${INC_DIR})

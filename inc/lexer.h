@@ -1,6 +1,8 @@
 #ifndef LEXER_H
 #define LEXER_H
 
+#include <stddef.h>
+
 /**
  * @brief Enumerated type for the token class. Divides all
  *        tokens into the large groups. Sum of the token classes
@@ -18,7 +20,7 @@ typedef enum
 } token_class_t;
 
 /**
- * @brief Base token struct. 
+ * @brief Base token struct.
  */
 typedef struct
 {
@@ -114,8 +116,11 @@ typedef struct
  */
 typedef enum
 {
-  OP_BR, /* Opening bracket. */
-  CL_BR, /* Closing bracket. */
+  OP_RND_BR, /* Opening round bracket. */
+  CL_RND_BR, /* Closing round bracket. */
+  OP_CRV_BR, /* Opening curved bracket. */
+  CL_CRV_BR, /* Closing curved bracket. */
+  END, /* Terminating token. */
 } punct_symb_t;
 
 /**
@@ -126,5 +131,14 @@ typedef struct
   token_t base;
   punct_symb_t val;
 } punct_symb_token_t;
+
+/**
+ * @brief Tokenize string - divide into the stream of tokens.
+ *
+ * @param[in] str String to be tokenized
+ *
+ * @return 0 on success, -1 otherwise
+ */
+int lexer_tokenize(const char* str);
 
 #endif /* LEXER_H */

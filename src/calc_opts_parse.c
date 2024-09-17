@@ -80,7 +80,7 @@ static int calc_opts_alloc(calc_opts_t* calc_opts)
  * @brief Checks whether string is convertible into the interger value.
  * @return true if string is convertible, false otherwise.
  */
-static bool is_number(const char* str)
+static bool is_number_str(const char* str)
 {
   while (*str != '\0')
   {
@@ -105,8 +105,6 @@ static int calc_opts_parse_var_descr(var_descr_t* var)
     return -1;
   }
 
-  printf("optarg: |%s| \n", optarg);
-
   /* Find separator. */
   char* delim = strchr(optarg, '=');
   if (delim == NULL)
@@ -122,7 +120,7 @@ static int calc_opts_parse_var_descr(var_descr_t* var)
   /* Variables value is the rest of the string after delim symbol '='. */
   const char* var_value = delim + 1;
 
-  if (is_number(var_value) == true)
+  if (is_number_str(var_value) == true)
   {
     /* Convert to integer value is possible. */
     var->value.integer_value = atoi(var_value);

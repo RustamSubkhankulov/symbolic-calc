@@ -3,19 +3,7 @@
 
 #include <stddef.h>
 
-#include "variables.h"
-
-/**
- * @brief Calc's options sturcture.
- *
- * @var size_t vars_num Number of variables defined.
- * @var var_t* vars     Variable descriptors array.
- */
-typedef struct
-{
-  size_t vars_num;
-  var_descr_t* vars;
-} calc_opts_t;
+#include "calc.h"
 
 /**
  * @brief  Parses cmnd line arguments via 'argc' and 'argv' to get
