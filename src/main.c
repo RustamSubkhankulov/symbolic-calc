@@ -13,9 +13,9 @@ int main(const int argc, char* argv[])
 
   if (argc < 2)
   {
-    /* 
-     * Not enough args. 
-     * Display help message and exit with failure. 
+    /*
+     * Not enough args.
+     * Display help message and exit with failure.
      */
     display_help_msg();
     exit(EXIT_FAILURE);
@@ -25,6 +25,13 @@ int main(const int argc, char* argv[])
   char* expr = (char*) calloc(strlen(argv[1]) + 1U, sizeof(char));
   assert(expr);
   strcpy(expr, argv[1]);
+
+  /*
+   * Replace expression string in argv with empty string,
+   * since expression starting with minus is considered
+   * an option otherwise.
+   */
+  argv[1] = "";
 
   /* Parse cmnd line arguments. */
   calc_opts_t calc_opts = { 0 };
