@@ -48,7 +48,8 @@ GNU *Bison* — программа, предназначенная для авт
 result: expr
 
 expr: term | expr ADD term | expr SUB term
-term: factor | term MUL factor | term DIV factor
+term: power | term MUL power | term DIV power
+power: factor | power POW factor
 factor: OPEN_BR_CRVD expr CLOS_BR_CRVD | VAR_ID | constant | std_func
 
 constant: STD_CONST | NUMINT | NUMFLT
@@ -57,7 +58,7 @@ std_func: STD_FUNC OPEN_BR_RND expr CLOS_BR_RND
 
 Краткое описание грамматики:
 - *result* - 'top-level' нетерминал, значение которого является результатом выполнения калькулятора.
-- *expr*, *term* - нетерминалы, тела продукции для которых задают приоритет бинарных арифметических операций.
+- *expr*, *term*, *power* - нетерминалы, тела продукции для которых задают приоритет бинарных арифметических операций - сложения, вычитания, умножения, деления и возведения в степень.
 - *factor* - может быть раскрыт в фигурные скобки, содержащие *expr* (приоритизация посредством скобок), а также в идентификатор переменной, константное значение *constant* или вызов математической функции.
 - *constant* - стандартная именованная константа (``STD_CONST``), целое число (``NUMINT``) или число с плавающей точкой (``NUMFLT``).
 - *std_func* - вызов стандартной математической функции, аргументом которой является выражение *expr* в круглых скобках.
@@ -68,12 +69,12 @@ std_func: STD_FUNC OPEN_BR_RND expr CLOS_BR_RND
 
 ```
 term:
-  factor { $<fval>$ = $<fval>1; }
-  | term MUL factor { 
+  power { $<fval>$ = $<fval>1; }
+  | term MUL power { 
     $<fval>$ = $<fval>1 * $<fval>3;
     YACC_VPRINT("%f * %f = %f \n", $<fval>1, $<fval>3, $<fval>$);
   }
-  | term DIV factor { 
+  | term DIV power { 
     $<fval>$ = $<fval>1 / $<fval>3; 
     YACC_VPRINT("%f / %f = %f \n", $<fval>1, $<fval>3, $<fval>$);
   }

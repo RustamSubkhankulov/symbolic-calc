@@ -105,6 +105,7 @@ EXP { LEX_VPRINT("STD_CONST: %s \n", yytext); gCur_pos += yyleng; yylval.ival = 
 \-  { LEX_VPRINT("SUB \n"); gCur_pos += yyleng; return SUB; }
 \/  { LEX_VPRINT("DIV \n"); gCur_pos += yyleng; return DIV; }
 \*  { LEX_VPRINT("MUL \n"); gCur_pos += yyleng; return MUL; }
+\^  { LEX_VPRINT("POW \n"); gCur_pos += yyleng; return POW; }
 
 \(  { LEX_VPRINT("OPEN_BR_RND \n"); gCur_pos += yyleng; return OPEN_BR_RND; }
 \)  { LEX_VPRINT("CLOS_BR_RND \n"); gCur_pos += yyleng; return CLOS_BR_RND; }

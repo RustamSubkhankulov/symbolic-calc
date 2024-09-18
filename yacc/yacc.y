@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include "yacc_calc_support.h"
 #include "standard.h"
@@ -44,7 +45,7 @@ __attribute__((noreturn)) void yyerror(float* eval_res, const char* error_str)
 
 %parse-param {float* eval_res}
 
-%token ADD SUB MUL DIV
+%token ADD SUB MUL DIV POW
 %token VAR_ID STD_CONST STD_FUNC NUMINT NUMFLT
 %token OPEN_BR_RND CLOS_BR_RND OPEN_BR_CRVD CLOS_BR_CRVD
 
@@ -68,14 +69,21 @@ expr:
   }
 
 term:
-  factor { $<fval>$ = $<fval>1; }
-  | term MUL factor { 
+  power { $<fval>$ = $<fval>1; }
+  | term MUL power { 
     $<fval>$ = $<fval>1 * $<fval>3;
     YACC_VPRINT("%f * %f = %f \n", $<fval>1, $<fval>3, $<fval>$);
   }
-  | term DIV factor { 
+  | term DIV power { 
     $<fval>$ = $<fval>1 / $<fval>3; 
     YACC_VPRINT("%f / %f = %f \n", $<fval>1, $<fval>3, $<fval>$);
+  }
+
+power:
+  factor {}
+  | power POW factor {
+    $<fval>$ = pow($<fval>1, $<fval>3);
+    YACC_VPRINT("%f ^ %f = %f \n", $<fval>1, $<fval>3, $<fval>$);
   }
 
 factor: 
