@@ -17,7 +17,7 @@ extern int gCur_pos;
 extern void underline_print_error(int cur_pos);
 
 /* Reports error if YACC finds one. */
-__attribute((noreturn)) void yyerror(float* eval_res, const char* error_str)
+__attribute__((noreturn)) void yyerror(float* eval_res, const char* error_str)
 {
   (void) eval_res;
 

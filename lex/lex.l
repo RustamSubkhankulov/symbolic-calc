@@ -18,7 +18,7 @@ extern int gCur_pos;
 /* Helper function for displaying parsing errors. */
 extern void underline_print_error(int cur_pos);
 
-__attribute((noreturn)) static void lexical_error(const char* yytext)
+__attribute__((noreturn)) static void lexical_error(const char* yytext)
 {
   fprintf(stderr, "Lexical error. Unexpected token: [%s] \n", yytext);
   underline_print_error(gCur_pos);

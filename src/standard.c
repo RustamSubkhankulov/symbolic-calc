@@ -61,9 +61,9 @@ float std_const_value(std_const_t std_const)
   switch (std_const)
   {
     case PI:
-      return (float) M_PI;
+      return 3.141593f;
     case EXP:
-      return (float) M_E;
+      return 2.718282f;
     default: {
       fprintf(stderr, "Unexpected standard constant. \n");
       exit(EXIT_FAILURE);

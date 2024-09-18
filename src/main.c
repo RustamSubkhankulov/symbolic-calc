@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #include "calc.h"
 #include "calc_opts_parse.h"
@@ -11,7 +12,9 @@ int main(const int argc, char* argv[])
   int ret_code = EXIT_SUCCESS;
 
   /* Save up expression string. */
-  const char* expr = strdup(argv[1]);
+  char* expr = (char*) calloc(strlen(argv[1]), sizeof(char));
+  assert(expr);
+  strcpy(expr, argv[1]);
 
   /* Parse cmnd line arguments. */
   calc_opts_t calc_opts = { 0 };
