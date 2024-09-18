@@ -11,8 +11,18 @@ int main(const int argc, char* argv[])
   int res      = 0;
   int ret_code = EXIT_SUCCESS;
 
+  if (argc < 2)
+  {
+    /* 
+     * Not enough args. 
+     * Display help message and exit with failure. 
+     */
+    display_help_msg();
+    exit(EXIT_FAILURE);
+  }
+
   /* Save up expression string. */
-  char* expr = (char*) calloc(strlen(argv[1]), sizeof(char));
+  char* expr = (char*) calloc(strlen(argv[1]) + 1U, sizeof(char));
   assert(expr);
   strcpy(expr, argv[1]);
 

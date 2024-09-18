@@ -29,4 +29,9 @@ int calc_opts_parse(const int argc, char* argv[], calc_opts_t* calc_opts);
  */
 void calc_opts_dtor(calc_opts_t* calc_opts);
 
+/**
+ * @brief Displays help message. Invoked by using '--help' option.
+ */
+void display_help_msg(void);
+
 #endif /* CALC_OPTS_PARSE_H */

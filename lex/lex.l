@@ -12,6 +12,9 @@
 /* Definitions. */
 %{
 
+/* Fix flex bug. */
+int fileno(FILE *stream);
+
 /* Current symbol position. */
 extern int gCur_pos;
 
@@ -43,10 +46,10 @@ ALPHAUC [A-Z]
 ALPHA   {ALPHALC}|{ALPHAUC}
 
 DECINT  {DIGIT0}|({DIGIT1}{DIGIT0}*)
-NUMINT  [-+]?{DECINT}
+NUMINT  {DECINT}
 
 DECFLT  ({DECINT}?[.]{DIGIT0}{1,6})|({DECINT}[.]({DIGIT0}{0,6})?)
-NUMFLT  [-+]?{DECFLT}
+NUMFLT  {DECFLT}
 
 NM_TAIL ({ALPHA}|{DECINT})*
 NAMEUC  {ALPHAUC}{NM_TAIL}

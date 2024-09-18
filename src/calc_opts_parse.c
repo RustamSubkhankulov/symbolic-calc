@@ -146,7 +146,7 @@ static int calc_opts_parse_var_descr(var_descr_t* var)
 /**
  * @brief Displays help message. Invoked by using '--help' option.
  */
-static void display_help_msg(void)
+void display_help_msg(void)
 {
   printf("Symbolic expression evaluator. \n");
   printf("Usage: calc \"expression\" [--var variable_name=variable_value]* [--help]\n");

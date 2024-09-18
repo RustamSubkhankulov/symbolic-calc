@@ -48,6 +48,8 @@ add_executable(${PROJECT_NAME}
   ${BISON_parser_OUTPUTS}
   )
 
+target_link_libraries(${PROJECT_NAME} m)
+
 target_include_directories(${PROJECT_NAME} PUBLIC ${INC_DIR})
 target_include_directories(${PROJECT_NAME} PRIVATE ${INC_PRIVATE_DIR})
 
