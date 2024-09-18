@@ -21,6 +21,18 @@ extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 /* Main YACC parser method. */
 extern int yyparse(float* eval_res);
 
+/**
+ * @brief Current experession string.
+ */
+static const char* sCur_expr_str;
+
+/**
+ * @brief Current symbol position in lexer.
+ *        Maintained to diagnose errors in
+ *        readable format.
+ * */
+int gCur_pos;
+
 /*
  * Calc's options for the current expression evaluation.
  * This
@@ -125,6 +137,16 @@ static bool check_vars_unique(const calc_opts_t* calc_opts)
   return true;
 }
 
+void underline_print_error(int cur_pos)
+{
+  fprintf(stderr, "%s\n", sCur_expr_str);
+  for (int sym_ct = 0; sym_ct < cur_pos; ++sym_ct)
+  {
+    fprintf(stderr, " ");
+  }
+  fprintf(stderr, "^\n");
+}
+
 /**
  * @brief Evaluate expression given in 'expr'.
  *
@@ -172,8 +194,18 @@ int calc_eval_expr(const char* expr, const calc_opts_t* calc_opts, float* eval_r
   /* Set options for the current expression evaluation (for variable's values). */
   sCalc_opts = calc_opts;
 
+  /* Set current expr string and processed symbol position to 0. */
+  sCur_expr_str = expr;
+  gCur_pos      = 0;
+
   /* Call YACC main parser's method. */
   yyparse(eval_res);
+
+  if (gCur_pos != (int) strlen(expr))
+  {
+    fprintf(stderr, "calc_eval_expr(): invalid expression. \n");
+    underline_print_error(gCur_pos - 1U);
+  }
 
   /* Reclaim allocated resources. */
   yy_delete_buffer(buffer_state);

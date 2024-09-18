@@ -12,16 +12,24 @@
 /* Definitions. */
 %{
 
+/* Current symbol position. */
+extern int gCur_pos;
+
+/* Helper function for displaying parsing errors. */
+extern void underline_print_error(int cur_pos);
+
 __attribute((noreturn)) static void lexical_error(const char* yytext)
 {
-  fprintf(stderr, "Lexical error. Unexpected token: %s \n", yytext);
+  fprintf(stderr, "Lexical error. Unexpected token: [%s] \n", yytext);
+  underline_print_error(gCur_pos);
+
   exit(EXIT_FAILURE);
 }
 
 #ifdef VERBOSE_LEX
-#define LEX_VERBOSE_PRINT(...) do { fprintf(stderr, __VA_ARGS__); } while(0);
+#define LEX_VPRINT(...) do { fprintf(stderr, __VA_ARGS__); } while(0);
 #else
-#define LEX_VERBOSE_PRINT(...)
+#define LEX_VPRINT(...)
 #endif
 
 %}
@@ -51,48 +59,57 @@ VAR_ID  {NAME}{ID_TAIL}
 /* Rules section. */
 %%
 
-sin  { LEX_VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = SIN;  return STD_FUNC; }
-cos  { LEX_VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = COS;  return STD_FUNC; }
-tg   { LEX_VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = TG;   return STD_FUNC; }
-ctg  { LEX_VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = CTG;  return STD_FUNC; }
-sqrt { LEX_VERBOSE_PRINT("STD_FUNC: %s \n", yytext); yylval.ival = SQRT; return STD_FUNC; }
+sin  { LEX_VPRINT("STD_FUNC: %s \n", yytext); gCur_pos += yyleng; yylval.ival = SIN;  return STD_FUNC; }
+cos  { LEX_VPRINT("STD_FUNC: %s \n", yytext); gCur_pos += yyleng; yylval.ival = COS;  return STD_FUNC; }
+tg   { LEX_VPRINT("STD_FUNC: %s \n", yytext); gCur_pos += yyleng; yylval.ival = TG;   return STD_FUNC; }
+ctg  { LEX_VPRINT("STD_FUNC: %s \n", yytext); gCur_pos += yyleng; yylval.ival = CTG;  return STD_FUNC; }
+sqrt { LEX_VPRINT("STD_FUNC: %s \n", yytext); gCur_pos += yyleng; yylval.ival = SQRT; return STD_FUNC; }
 
-PI  { LEX_VERBOSE_PRINT("STD_CONST: %s \n", yytext); yylval.ival = PI;  return STD_CONST; }
-EXP { LEX_VERBOSE_PRINT("STD_CONST: %s \n", yytext); yylval.ival = EXP; return STD_CONST; }
+PI  { LEX_VPRINT("STD_CONST: %s \n", yytext); gCur_pos += yyleng; yylval.ival = PI;  return STD_CONST; }
+EXP { LEX_VPRINT("STD_CONST: %s \n", yytext); gCur_pos += yyleng; yylval.ival = EXP; return STD_CONST; }
 
 {NUMINT} { 
 
-  LEX_VERBOSE_PRINT("NUMINT: %s \n", yytext); 
+  LEX_VPRINT("NUMINT: %s \n", yytext); 
+
+  gCur_pos += yyleng;
   yylval.ival = atoi(yytext);
+  
   return NUMINT; 
 }
 
 {NUMFLT} { 
 
-  LEX_VERBOSE_PRINT("NUMFLT: %s \n", yytext); 
+  LEX_VPRINT("NUMFLT: %s \n", yytext); 
+
+  gCur_pos += yyleng;
   yylval.fval = atof(yytext);
+  
   return NUMFLT; 
 }
 
 {VAR_ID} { 
 
-  LEX_VERBOSE_PRINT("VAR_ID: %s \n", yytext);
+  LEX_VPRINT("VAR_ID: %s \n", yytext);
+
+  gCur_pos += yyleng;
   yylval.sval = yytext;
+  
   return VAR_ID; 
 }
 
-\+  { LEX_VERBOSE_PRINT("ADD \n"); return ADD; }
-\-  { LEX_VERBOSE_PRINT("SUB \n"); return SUB; }
-\/  { LEX_VERBOSE_PRINT("DIV \n"); return DIV; }
-\*  { LEX_VERBOSE_PRINT("MUL \n"); return MUL; }
+\+  { LEX_VPRINT("ADD \n"); gCur_pos += yyleng; return ADD; }
+\-  { LEX_VPRINT("SUB \n"); gCur_pos += yyleng; return SUB; }
+\/  { LEX_VPRINT("DIV \n"); gCur_pos += yyleng; return DIV; }
+\*  { LEX_VPRINT("MUL \n"); gCur_pos += yyleng; return MUL; }
 
-\(  { LEX_VERBOSE_PRINT("OPEN_BR_RND \n"); return OPEN_BR_RND; }
-\)  { LEX_VERBOSE_PRINT("CLOS_BR_RND \n"); return CLOS_BR_RND; }
+\(  { LEX_VPRINT("OPEN_BR_RND \n"); gCur_pos += yyleng; return OPEN_BR_RND; }
+\)  { LEX_VPRINT("CLOS_BR_RND \n"); gCur_pos += yyleng; return CLOS_BR_RND; }
 
-\{  { LEX_VERBOSE_PRINT("OPEN_BR_CRVD \n"); return OPEN_BR_CRVD; }
-\}  { LEX_VERBOSE_PRINT("CLOS_BR_CRVD \n"); return CLOS_BR_CRVD; }
+\{  { LEX_VPRINT("OPEN_BR_CRVD \n"); gCur_pos += yyleng; return OPEN_BR_CRVD; }
+\}  { LEX_VPRINT("CLOS_BR_CRVD \n"); gCur_pos += yyleng; return CLOS_BR_CRVD; }
 
-[[:space:]]+ {} /* Ignore whitespaces. */
+[[:space:]]+ { gCur_pos += yyleng; } /* Ignore whitespaces. */
 .|\\n lexical_error(yytext);
 
 %%
