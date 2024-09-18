@@ -8,10 +8,10 @@
  *
  * @var bool   is_named_constant Flag, indicating how the variable is defined.
  *                               Clear flag indicates that its value is defined
- *                               with integer value. Otherwise variable's value
+ *                               with float value. Otherwise variable's value
  *                               is defined as named constant, predefined
  *                               in the grammar.
- * @var int    integer_value     Integer value of the variable.
+ * @var int    float_value       Float value of the variable.
  * @var char[] constant_name     Name of the predefined constant.
  */
 typedef struct
@@ -20,8 +20,7 @@ typedef struct
 
   union
   {
-    /* TODO: add float values. */
-    int integer_value;
+    float float_value;
     const char* constant_name;
   };
 } var_value_t;

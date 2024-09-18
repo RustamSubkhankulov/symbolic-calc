@@ -89,7 +89,7 @@ float calc_get_var_value(const char* var_name)
     }
 
     /* Return variable's value. */
-    return sCalc_opts->vars[idx].value.integer_value;
+    return sCalc_opts->vars[idx].value.float_value;
   }
 
   fprintf(stderr, "Undefined variable \'var_name\'. \n");
