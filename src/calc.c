@@ -9,21 +9,37 @@
 #include "standard.h"
 #include "variables.h"
 
-/* Buffer handle. */
+/* Buffer handle for providing YACC & Lex input data. */
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 
-/* Sets string as input buffer for Flex. */
+/* Sets string as input buffer for YACC & Lex. */
 extern YY_BUFFER_STATE yy_scan_string(char* str);
 
 /* Reclaim the storage associated with a buffer. */
 extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 
-/* Main parser method. */
+/* Main YACC parser method. */
 extern int yyparse(float* eval_res);
 
-/* Calc's options for the current expression evaluation. */
+/*
+ * Calc's options for the current expression evaluation.
+ * This
+ */
+
+/**
+ * @brief Calc's options for the current expression
+ *        evaluation.
+ *
+ * @detail Set as static variable inside this translation unit
+ *         to provide access to variable's definitions from the
+ *         inside of yyparse() (from yacc/yacc.y) to substitute
+ *         variable with its value in the evaluation process.
+ */
 static const calc_opts_t* sCalc_opts;
 
+/**
+ * @brief Checks if the string contains non-space characters.
+ */
 static bool is_empty_str(const char* str)
 {
   while (*str != '\0')
@@ -37,6 +53,23 @@ static bool is_empty_str(const char* str)
   return true;
 }
 
+/**
+ * @brief Calc's helper method for the parser.
+ *
+ * @detail Provides means to get variable's value during
+ *         expression evaluation from the inside of yyparse()
+ *         (from rules in yacc/yacc.y). Meant to be used by the
+ *         parser only and only during parsing process
+ *         (in yyparse() called from the main evaluation
+ *         method - calc_eval_expr()). Otherwise behaviour
+ *         of this function may be invalid.
+ *
+ *         If variable is undefined, exits with failure.
+ *
+ * @param[in] var_name Variable's name.
+ *
+ * @return Variable's value.
+ */
 float calc_get_var_value(const char* var_name)
 {
   assert(var_name);
@@ -66,11 +99,61 @@ float calc_get_var_value(const char* var_name)
   return 0.f;
 }
 
+/**
+ * @brief Checks variables for for uniqueness.
+ *
+ * @param[in] calc_opts Calc's options containing
+ *                      variable's descriptors.
+ *
+ * @return true if all of the variables defined have unique names,
+ *         false otherwise.
+ */
+static bool check_vars_unique(const calc_opts_t* calc_opts)
+{
+  for (size_t idx = 0U; idx < calc_opts->vars_num; ++idx)
+  {
+    for (size_t j = 0U; j < calc_opts->vars_num; ++j)
+    {
+      if (j != idx && !strcmp(calc_opts->vars[idx].name, calc_opts->vars[j].name))
+      {
+        fprintf(stderr, "calc_eval_expr(): variable %s redefined. \n", calc_opts->vars[idx].name);
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+/**
+ * @brief Evaluate expression given in 'expr'.
+ *
+ * @detail Parses expression, represented as string parameter 'expr'.
+ *         Besides integer and float numbers, operators and brackets
+ *         expression may contain variales. Each variable used in
+ *         expression must be defined and in 'calc_opts'. Variables
+ *         passed as options are checked for uniqueness.
+ *         calc_eval_expr() will return with failure if any two
+ *         variables have the same name.
+ *
+ * @param[in]  expr      String representation of the expression
+ *                       to be evaluated.
+ * @param[in]  calc_opts Calc's options (variable's descriptors).
+ * @param[out] eval_res  Result of the expression evaluation.
+ *
+ * @return 0 on success, -1 otherwise.
+ */
 int calc_eval_expr(const char* expr, const calc_opts_t* calc_opts, float* eval_res)
 {
   assert(expr != NULL);
   assert(calc_opts != NULL);
   assert(eval_res != NULL);
+
+  /* Validate variables definitions. */
+  if (check_vars_unique(calc_opts) != true)
+  {
+    return -1;
+  }
 
   /* Check for the empty string. */
   if (is_empty_str(expr) == true)

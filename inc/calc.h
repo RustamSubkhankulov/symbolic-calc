@@ -6,10 +6,15 @@
 #include "variables.h"
 
 /**
- * @brief Calc's options sturcture.
+ * @brief Calc's options structure.
  *
- * @var size_t vars_num Number of variables defined.
- * @var var_t* vars     Variable descriptors array.
+ * @detail Contains options for calc. THe only available option
+ *         type now is variable definition. Therefore structure
+ *         fields are total number of variables defined and their
+ *         descriptors.
+ *
+ * @var size_t vars_num Total number of variables defined.
+ * @var var_t* vars     Variable's descriptor array.
  */
 typedef struct
 {
@@ -22,12 +27,15 @@ typedef struct
  *
  * @detail Parses expression, represented as string parameter 'expr'.
  *         Besides integer and float numbers, operators and brackets
- *         expression may contain variales. Each variable used must
- *         be defined and its descriptor is found in 'calc_opts'
+ *         expression may contain variales. Each variable used in
+ *         expression must be defined and in 'calc_opts'. Variables
+ *         passed as options are checked for uniqueness.
+ *         calc_eval_expr() will return with failure if any two
+ *         variables have the same name.
  *
  * @param[in]  expr      String representation of the expression
  *                       to be evaluated.
- * @param[in]  calc_opts Calc's options (variables descriptors).
+ * @param[in]  calc_opts Calc's options (variable's descriptors).
  * @param[out] eval_res  Result of the expression evaluation.
  *
  * @return 0 on success, -1 otherwise.

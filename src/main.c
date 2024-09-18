@@ -10,6 +10,7 @@ int main(const int argc, char* argv[])
   int res      = 0;
   int ret_code = EXIT_SUCCESS;
 
+  /* Save up expression string. */
   const char* expr = strdup(argv[1]);
 
   /* Parse cmnd line arguments. */

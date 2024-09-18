@@ -5,10 +5,14 @@
  * @brief Calc's helper method for the parser.
  *
  * @detail Provides means to get variable's value during
- *         expression evaluation. Meant to be used by the
+ *         expression evaluation from the inside of yyparse()
+ *         (from rules in yacc/yacc.y). Meant to be used by the
  *         parser only and only during parsing process
  *         (in yyparse() called from the main evaluation
- *         method - calc_eval_expr()).
+ *         method - calc_eval_expr()). Otherwise behaviour
+ *         of this function may be invalid.
+ *
+ *         If variable is undefined, exits with failure.
  *
  * @param[in] var_name Variable's name.
  *
