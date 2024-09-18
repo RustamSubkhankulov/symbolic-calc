@@ -163,6 +163,12 @@ Evaluating result. Evaluation result is 0.620194
 ```
 
 ## Ссылки
+
+Схожие проекты:
+1. [Лексический анализатор с использованием *Flex*](https://github.com/RustamSubkhankulov/lexer)
+2. [Восходящий синтаксический анализатор типа "Перенос/свёртка"](https://github.com/RustamSubkhankulov/shift-reduce-parser)
+
+### Использованная документация/спецификация
 1. [Документация на Bison](https://www.gnu.org/software/bison/manual/bison.html).
 2. [Репозиторий проекта Flex на GitHub](https://github.com/westes/flex)
 3. [Полезный HOWTO по использованию связки Lex&YACC](https://berthub.eu/lex-yacc/cvs/lex-yacc-howto.html).
