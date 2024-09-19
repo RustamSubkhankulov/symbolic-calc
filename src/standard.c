@@ -6,7 +6,10 @@
 
 #include "standard.h"
 
-#define _USE_MATH_DEFINES
+#define STD_CONST_PI
+
+static const float sStd_const_PI  = 3.141593f;
+static const float sStd_const_EXP = 2.718282f;
 
 /**
  * @brief Evaluate standar function 'std_func'
@@ -60,10 +63,13 @@ float std_const_value(std_const_t std_const)
 {
   switch (std_const)
   {
+    /*
+     * FIXME: gather all constant's information in one
+     * and only struct's array, so new entities are added easily. */
     case PI:
-      return 3.141593f;
+      return sStd_const_PI;
     case EXP:
-      return 2.718282f;
+      return sStd_const_EXP;
     default: {
       fprintf(stderr, "Unexpected standard constant. \n");
       exit(EXIT_FAILURE);

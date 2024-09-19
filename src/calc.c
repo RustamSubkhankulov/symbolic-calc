@@ -46,6 +46,7 @@ int gCur_pos;
  *         to provide access to variable's definitions from the
  *         inside of yyparse() (from yacc/yacc.y) to substitute
  *         variable with its value in the evaluation process.
+ *         NULL if there are no variables defined.
  */
 static const calc_opts_t* sCalc_opts;
 
@@ -86,7 +87,7 @@ float calc_get_var_value(const char* var_name)
 {
   assert(var_name);
 
-  for (size_t idx = 0U; idx < sCalc_opts->vars_num; ++idx)
+  for (size_t idx = 0U; sCalc_opts != NULL && idx < sCalc_opts->vars_num; ++idx)
   {
     /* Skip other variables. */
     if (strcmp(var_name, sCalc_opts->vars[idx].name))
@@ -122,6 +123,11 @@ float calc_get_var_value(const char* var_name)
  */
 static bool check_vars_unique(const calc_opts_t* calc_opts)
 {
+  if (calc_opts == NULL)
+  {
+    return true;
+  }
+
   for (size_t idx = 0U; idx < calc_opts->vars_num; ++idx)
   {
     for (size_t j = 0U; j < calc_opts->vars_num; ++j)
@@ -156,7 +162,8 @@ void underline_print_error(int cur_pos)
  *         expression must be defined and in 'calc_opts'. Variables
  *         passed as options are checked for uniqueness.
  *         calc_eval_expr() will return with failure if any two
- *         variables have the same name.
+ *         variables have the same name. If there are no variables
+ *         defined, 'calc_opts' may be NULL.
  *
  * @param[in]  expr      String representation of the expression
  *                       to be evaluated.
@@ -168,7 +175,6 @@ void underline_print_error(int cur_pos)
 int calc_eval_expr(const char* expr, const calc_opts_t* calc_opts, float* eval_res)
 {
   assert(expr != NULL);
-  assert(calc_opts != NULL);
   assert(eval_res != NULL);
 
   /* Validate variables definitions. */

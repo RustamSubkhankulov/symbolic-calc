@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.21)
 project(
         calc
         DESCRIPTION "Simple symbolic expression calculator"
-        LANGUAGES C
+        LANGUAGES C CXX
         )
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -80,5 +80,5 @@ install(
         PUBLIC_HEADER DESTINATION inc/${PROJECT_NAME}
         )
 
-# add_subdirectory(${TESTS_DIR})
+add_subdirectory(${TESTS_DIR})
 add_subdirectory(${DRIVER_DIR})
