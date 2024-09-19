@@ -119,9 +119,9 @@ std_func: STD_FUNC OPEN_BR_RND expr CLOS_BR_RND {
 
 ## Запуск
 
-По завершении сборки исполняемый файл находится в директории ``build``.
+По завершении сборки исполняемый файл драйвера находится в директории по пути ``bin/driver``. 
 
-Использование: calc "expression" [OPTIONS]*
+Использование: <code>path-to-executable "expression" [OPTIONS]*</code>
 - "expression" - строка, содержащая выражение.
 - *OPTIONS* - дополнительные опции запуска. Список доступных опций перечислен ниже.
 
@@ -134,7 +134,7 @@ std_func: STD_FUNC OPEN_BR_RND expr CLOS_BR_RND {
 
 Пример вывода с ``DVERBOSE_LEX=ON``:
 ```
-❯ ./build/calc "2 + sin(x) / {y + cos(x)} * PI" --var x=4.456 --var y=2.456
+❯ ./bin/driver "2 + sin(x) / {y + cos(x)} * PI" --var x=4.456 --var y=2.456
 Evaluating expression: 2 + sin(x) / {y + cos(x)} * PI
 NUMINT: 2
 ADD
@@ -160,7 +160,7 @@ Evaluation result is 0.620194
 
 Пример вывода с ``DVERBOSE_YACC=ON``:
 ```
-❯ ./build/calc "2 + sin(x) / {y + cos(x)} * PI" --var x=4.456 --var y=2.456
+❯ ./bin/driver "2 + sin(x) / {y + cos(x)} * PI" --var x=4.456 --var y=2.456
 Evaluating expression: 2 + sin(x) / {y + cos(x)} * PI
 Evaluating 'var_id': name x
 Evaluated 'var_id': 4.456000
@@ -172,7 +172,7 @@ Evaluating 'var_id': name x
 Evaluated 'var_id': 4.456000
 Evaluating 'std_func': code 1 arg 4.456000
 Evaluated 'std_func': -0.253589
-2.456000 + -0.253589 = 2.202411
+2.456000 + -0.253589 = 2.202411к
 -0.967312 / 2.202411 = -0.439206
 Evaluating 'STD_CONST': code 0
 Evaluated 'STD_CONST': 3.141593
